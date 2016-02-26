@@ -1,0 +1,5 @@
+---
+- hosts: xxx
+  gather_facts: yes
+  roles:
+    - tengine

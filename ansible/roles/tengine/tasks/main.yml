@@ -1,0 +1,22 @@
+---
+ - name: copy
+   copy: src=/data/ansible/resource/{{ php }} dest=/root
+
+# - name: yum install required package
+#   yum: name={{ item }} state=present
+#   with_items:
+#     - freetype
+#     - libjpeg-turbo
+#     - libpng
+
+ 
+ - name: Install tengine php develop env
+   shell: cd /root ; rpm -ivh {{ item }}
+   with_items:
+     - freetype*
+     - libjpeg-turbo*
+     - libpng*
+     - libmemcached*
+     - tengine*
+     - php7-memcached*
+     - php-7*

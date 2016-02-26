@@ -1,0 +1,6 @@
+---
+   php: php-7.0.3-0.el6.x86_64.rpm
+   php-yaf: yaf-3.0.2-.el6.x86_64.rpm
+   php-memcached: php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
+   tengine: tengine-2.1.2-0.x86_64.rpm
+

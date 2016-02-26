@@ -1,0 +1,19 @@
+---
+- hosts: xxx
+  gather_facts: yes
+  vars:
+    http_port: 80
+    server: www.wxshake.com wxshake.com
+  remote_user: root
+  tasks:
+  - name: update config 
+    template: src=/data/ansible/tengine_config/templates/www.wxshake.com.conf.j2  dest=/data/tengine/conf/available_site/www.wxshake.com.conf backup=yes force=yes
+#    notify:
+#        - restart tengine
+#  - shell: ln -s  /data/tengine/conf/available_site/tvodsapi.s.weshaketv.com.conf /data/tengine/conf/conf.d/tvodsapi.s.weshaketv.com.conf
+  - shell: touch {{ ansible_hostname }}
+#    notify:
+#        - restart tengine
+  handlers:
+  - name: restart tengine
+    service: name=tengine  state=started
