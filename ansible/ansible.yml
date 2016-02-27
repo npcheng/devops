@@ -6,14 +6,22 @@
     server: www.wxshake.com wxshake.com
   remote_user: root
   tasks:
-  - name: update config 
-    template: src=/data/ansible/tengine_config/templates/www.wxshake.com.conf.j2  dest=/data/tengine/conf/available_site/www.wxshake.com.conf backup=yes force=yes
+      - name: retrieve the list of home directories
+        command: ls /root
+        register: home_dirs
+
+      - name: add home dirs to the backup spooler
+        file: path=/home/{{ item }} src=/root/{{ item }} state=link
+        with_items: home_dirs.stdout_lines
+        # same as with_items: home_dirs.stdout.split()
+#  - name: update config 
+#    template: src=/data/ansible/tengine_config/templates/www.wxshake.com.conf.j2  dest=/data/tengine/conf/available_site/www.wxshake.com.conf backup=yes force=yes
 #    notify:
 #        - restart tengine
 #  - shell: ln -s  /data/tengine/conf/available_site/tvodsapi.s.weshaketv.com.conf /data/tengine/conf/conf.d/tvodsapi.s.weshaketv.com.conf
-  - shell: touch {{ ansible_hostname }}
+#  - shell: touch {{ ansible_hostname }}
 #    notify:
 #        - restart tengine
-  handlers:
-  - name: restart tengine
-    service: name=tengine  state=started
+#  handlers:
+#  - name: restart tengine
+#    service: name=tengine  state=started

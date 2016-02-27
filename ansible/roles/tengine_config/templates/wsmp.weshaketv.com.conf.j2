@@ -1,0 +1,41 @@
+server {
+    listen       80;
+    server_name  wsmp.weshaketv.com;
+
+    #charset koi8-r;
+    access_log  /data/logs/nginx/wsmp.weshaketv.com.access.log  main;
+
+    location / {
+        root   /data/www/sichuanMP;
+        index  index.html index.htm index.php;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root  /data/www/sichuanMP;
+    }
+
+    location ~ \.php$ {
+        root   /data/www/sichuanMP;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        #fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+        location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+        }
+}

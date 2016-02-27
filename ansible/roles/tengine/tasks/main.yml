@@ -1,6 +1,20 @@
 ---
+ - name: Install tengine php develop env
+   shell: setenforce 0 
+
  - name: copy
-   copy: src=/data/ansible/resource/{{ php }} dest=/root
+   copy: src=/data/ansible/resource/{{ item }} dest=/root
+   with_items:
+     - libmemcached-1.0.18-.el6.x86_64.rpm
+     - php-7.0.3-0.el6.x86_64.rpm
+     - php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
+     - tengine-2.1.2-0.x86_64.rpm
+     - yaf-3.0.2-.el6.x86_64.rpm
+     - freetype-2.3.11-15.el6_6.1.x86_64.rpm
+     - libjpeg-turbo-1.2.1-3.el6_5.x86_64.rpm
+     - libpng-1.2.49-1.el6_2.x86_64.rpm
+     - test.sh
+
 
 # - name: yum install required package
 #   yum: name={{ item }} state=present
@@ -10,13 +24,12 @@
 #     - libpng
 
  
- - name: Install tengine php develop env
-   shell: cd /root ; rpm -ivh {{ item }}
-   with_items:
-     - freetype*
-     - libjpeg-turbo*
-     - libpng*
-     - libmemcached*
-     - tengine*
-     - php7-memcached*
-     - php-7*
+# - name: Install tengine php develop env
+#   shell: cd /root ; sh test.sh
+#   with_items:
+#     - libmemcached-1.0.18-.el6.x86_64.rpm
+#     - php-7.0.3-0.el6.x86_64.rpm
+#     - php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
+#     - tengine-2.1.2-0.x86_64.rpm
+ - name: install ssl
+   copy: src=/data/ansible/resource/ssl dest=/data/tengine/conf/

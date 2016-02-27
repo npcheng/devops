@@ -1,0 +1,35 @@
+server {
+    listen       80;
+    server_name  mjgw.weihaojiao.com;
+
+    #charset koi8-r;
+    access_log  /data/logs/nginx/mall.weshaketv.com.access.log  main;
+
+    location / {
+        root   /data/www/mall.weshaketv.com;
+        index  index.html index.htm index.php;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root  /data/www/mall.weshaketv.com;
+    }
+
+    location ~ \.php$ {
+        root   /data/www/mall.weshaketv.com;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+}

@@ -1,0 +1,7 @@
+---
+- name: update vhost config
+  template: src={{item.src}} dest=/data/tengine/conf/available_site/{{item.dest}}
+  with_items:
+    - "{{template_file}}"
+#  notify:
+#   - soft link to conf.d

@@ -2,4 +2,4 @@
 - hosts: xxx
   gather_facts: yes
   roles:
-    - tengine
+    - tengine_config

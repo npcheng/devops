@@ -1,0 +1,42 @@
+server {
+    listen       80 default_server;
+    server_name  {{ server}};
+
+    if ($host != 'www.wxshake.com' ) {
+        rewrite ^/(.*)$ http://www.wxshake.com/$1 permanent;
+    }
+    root   /data/www/html;
+    #charset koi8-r;
+    access_log  /data/logs/nginx/www.wxshake.com.access.log  main;
+
+    location / {
+        index  index.html index.htm index.php;
+    }
+
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        #fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    if (!-e $request_filename) {
+       rewrite ^/wxshake/(?!index/.php|robots/.txt|images|html|game|uploadfiles|banner|css|scripts|user_guide)(.*)$ /wxshake/index.php?$1 last;
+        break;
+    }
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+}
