@@ -1,2 +1,3 @@
 ansible/resource/*
-ansible/tengine_config/templates*
+ansible/tengine_config/templates/\*
+ansible/roles/tengine_config/templates/
