@@ -1,7 +1,16 @@
 ---
+- name: judge root dir is exist
+  stat: path={{root_path}}
+  register: st
+
+
 - name: update vhost config
   template: src={{item.src}} dest=/data/tengine/conf/available_site/{{item.dest}}
+  when: st.stat.exists== False
   with_items:
     - "{{template_file}}"
-#  notify:
-#   - soft link to conf.d
+  notify: soft link to conf.d
+  
+- name: create root_path
+  file: path={{root_path}} state=directory owner=nginx group=nginx
+  when: st.stat.exists== False

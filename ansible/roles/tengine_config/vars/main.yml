@@ -1,3 +1,6 @@
 ---
 template_file:
- - {src: tvodsapi.s.weshaketv.com.conf.j2, dest: tvodsapi.s.weshaketv.com.conf}
+ - {src: standard.conf.j2, dest: biu.com.conf}
+root_path: /data/www/biu.com
+log_path: /data/logs/nginx/biu.com
+project_domain: biu.com

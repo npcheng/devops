@@ -1,3 +1,6 @@
 ---
 - name: soft link to conf.d
-  file: src=/data/tengine/conf/available_site/tvodsapi.s.weshaketv.com.conf path=/data/tengine/conf/conf.d/tvodsapi.s.weshaketv.com.conf state=link
+  file: src=/data/tengine/conf/available_site/{{item.dest}} path=/data/tengine/conf/conf.d/{{item.dest}} state=link
+  with_items:
+    - "{{template_file}}"
+

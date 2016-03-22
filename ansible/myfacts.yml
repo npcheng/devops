@@ -1,4 +1,8 @@
 ---
  - hosts: xxx
-   roles:
-   - myfacts
+   tasks:
+      - shell: cat /etc/motd ; echo $?
+        register: motd_status
+      - shell:  echo "test"
+        when: motd_status.stdout_lines[0] == "0"
+        when: motd_status.stdout == "0"
