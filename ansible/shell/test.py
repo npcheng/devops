@@ -4,7 +4,7 @@ import urllib
 import httplib2
 import json
 import sys,os,config
-import yaml
+import yaml,argparse
 
 
 class  wyInventory(object):
@@ -51,8 +51,26 @@ class  wyInventory(object):
         yaml.safe_dump(project_en, f, default_flow_style=False )
         f.close()
 
-    def gen_playbook(self):
-        pass
+    def gen_playbook(self, project, action):
+        if action not in ["add", "del"]:
+            print "action not support"
+            exit(1)
+        if action == "add":
+            playbook_role = "tengine"
+        else:
+            playbook_role = "tengine_del"
+            
+        playbook = [{"hosts": project,"gather_facts": "no",
+                     "role":[playbook_role]
+                     }]
+        try:
+            f = open(config.playbook_path, "w")
+        except Exception,e:
+            print e
+	print yaml.safe_dump(playbook, default_flow_style=False)	
+	f.close()
+
+
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
@@ -60,10 +78,11 @@ if __name__=="__main__":
     parser.add_argument('-d', '--delete', help='delete project', type=str)
 
     arg = parser.parse_args()
-
+    inventory = wyInventory()
     if arg.add !=None:
-        pass
-    elif arg.del != None and arg.add == None :
-        pass
+        inventory.gen_playbook(arg.add, "add")
+    elif arg.delete != None and arg.add == None :
+        inventory.gen_playbook(arg.add, "del")
+
     else:
-        pass  
+        pass
