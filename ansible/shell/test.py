@@ -88,6 +88,17 @@ class  wyInventory(object):
 
         f.close()
 
+    def gen_init_script(self, project):
+        #
+        try:
+            f=open(config.shell_file, "w")
+        except BaseException, e:
+            print e
+
+        f.write("ansible-playbook -i /data/ansible/ansible_hosts go.yml")
+        f.close()
+
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--add', help='add project', type=str)
@@ -96,13 +107,16 @@ if __name__=="__main__":
     arg = parser.parse_args()
     inventory = wyInventory()
     if arg.add !=None:
-
         inventory.get_host(arg.add)
         inventory.gen_playbook(arg.add, "add")
+        inventory.gen_init_script(arg.add)
 
     elif arg.delete != None and arg.add == None :
         inventory.get_host(arg.delete)
         inventory.gen_playbook(arg.delete, "del")
+        inventory.gen_init_script(arg.delete)
     else:
         print "亲再试试吧!"
         exit()
+
+

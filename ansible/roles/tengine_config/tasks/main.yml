@@ -1,10 +1,11 @@
 ---
 - name: judge root dir is exist
-  stat: path={{root_path}}
+#  stat: path={{ {{project}}.root_path}}
+  stat: path={{root_path }}
   register: st
 
 
-- name: update vhost config
+- name: add vhost config
   template: src={{item.src}} dest=/data/tengine/conf/available_site/{{item.dest}}
   when: st.stat.exists== False
   with_items:

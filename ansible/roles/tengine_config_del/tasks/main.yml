@@ -1,0 +1,11 @@
+---
+- name: rm link soft
+  file: path=/data/tengine/conf/conf.d/{{log_file}}.conf state=absent
+
+- name: rm root_path 
+  file: path={{root_path}} state=absent
+
+- name: rm conf file
+  file: path=/data/tengine/conf/available_site/{{log_file}}.conf state=absent
+  notify: restart tengine
+

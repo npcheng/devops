@@ -1,4 +1,4 @@
-base_root_path = "/data/www/"
-base_log_path = "/data/logs/nginx/"
 template_path = "/data/ansible/roles/tengine_config/templates/"
-api_url = "http://asset.wxshake.com/api/project/project"
+playbook_path="/data/ansible/go.yml"
+group_vars ="/data/ansible/group_vars/all"
+shell_file = "/data/ansible/go.sh"

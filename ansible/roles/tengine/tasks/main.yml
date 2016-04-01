@@ -1,7 +1,10 @@
 ---
- - name: Install tengine php develop env
-   shell: setenforce 0 
+- name: Install tengine php develop env
+  shell: setenforce 0 
 
+- name: register php_env
+  with_items:
+   - 
 # - name: copy
 #   copy: src=/data/ansible/resource/{{ item }} dest=/root
 #   with_items:
@@ -37,15 +40,15 @@
 #     - php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
 #     - yaf-3.0.2-1.el6.x86_64.rpm
 
- - name: delete rpm 
-   shell: cd /root/; rm -f  {{item}} 
-   with_items:
-     - libmemcached-1.0.18-.el6.x86_64.rpm
-     - libtool-ltdl-2.2.6-15.5.el6.x86_64.rpm
-     - libmcrypt-2.5.8-9.el6.x86_64.rpm
-     - php-7.0.4-0.el6.x86_64.rpm
-     - php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
-     - yaf-3.0.2-1.el6.x86_64.rpm
-
- - name: install ssl
-   copy: src=/data/ansible/resource/ssl dest=/data/tengine/conf/
+# - name: delete rpm 
+#   shell: cd /root/; rm -f  {{item}} 
+#   with_items:
+#     - libmemcached-1.0.18-.el6.x86_64.rpm
+#     - libtool-ltdl-2.2.6-15.5.el6.x86_64.rpm
+#     - libmcrypt-2.5.8-9.el6.x86_64.rpm
+#     - php-7.0.4-0.el6.x86_64.rpm
+#     - php7-memcached-2.2.0_beta-4.el6.x86_64.rpm
+#     - yaf-3.0.2-1.el6.x86_64.rpm
+#
+# - name: install ssl
+#   copy: src=/data/ansible/resource/ssl dest=/data/tengine/conf/
