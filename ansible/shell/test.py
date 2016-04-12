@@ -15,14 +15,16 @@ class  wyInventory(object):
         http = httplib2.Http()
         headers = {
             'Content-type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'xxx'
+            'User-Agent': 'npcheng'
                 }
-        url="http://asset.wxshake.com/api/project/project"
         try:
-            response, content = http.request(url, headers=headers)
+            response, content = http.request(config.api_url, headers=headers)
             if response.status == 200:
-                project_url = urllib.urlopen("http://asset.wxshake.com/api/project/project").read()
+                project_url = urllib.urlopen(config.api_url).read()
                 project_en = json.loads(project_url)
+            else:
+                print "API not avaiable"
+                sys.exit(1)
         except Exception, e:
             print( e )
             sys.exit(1)
@@ -51,12 +53,23 @@ class  wyInventory(object):
 
             project_en[project_list]["log_file"] = domain
 
-#        output_content =  yaml.safe_dump(project_en, default_flow_style=False)
 
-#        if var_content == project_en:
-#            return
+       #更新hosts文件
+        try:
+            f=open(config.ansible_hosts, "w")
+        except BaseException, e:
+            print e
+            exit()
+
+        for k, v in project_en.items():
+            f.write("[" +k + "]\n")
+            for ip in v["ip"]:
+                if ip != None:
+                    f.write(ip +"\n")
+        f.close()
 
 
+        #更新group/all
         try:
             f = open(self._tengine_config, "w")
         except Exception, e:
@@ -85,8 +98,9 @@ class  wyInventory(object):
 
         print yaml.safe_dump(playbook, default_flow_style=False)
         yaml.safe_dump(playbook, f,default_flow_style=False)
-
         f.close()
+
+
 
     def gen_init_script(self, project):
         #
@@ -94,15 +108,34 @@ class  wyInventory(object):
             f=open(config.shell_file, "w")
         except BaseException, e:
             print e
+            exit()
 
         f.write("ansible-playbook -i /data/ansible/ansible_hosts go.yml")
         f.close()
+
+def install_phpenv(project):
+    try:
+        f= open(config.install_script, "w")
+    except Exception, e:
+        print e
+        exit();
+
+    # copy to install_script to remote server
+    f.write("ansible -i /data/ansible/ansible_hosts " + project + " -m copy -a \"src=/data/ansible/shell/setup_lnmp.sh dest=/root\"\n")
+    f.write("ansible -i /data/ansible/ansible_hosts " + project + " -m copy -a \"src=/data/ansible/shell/setup_lnmp.sh dest=/root\"\n")
+    f.write("ansible -i /data/ansible/ansible_hosts " + project + " -m copy -a \"src=/data/ansible/resource/pkg.tar.gz dest=/root\"\n")
+    f.write("ansible -i /data/ansible/ansible_hosts " + project + " -m shell -a \"sh /root/setup_lnmp.sh\"\n")
+    f.write("rm -f $0\n");
+    # run script
+    #f.write
+    f.close()
 
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--add', help='add project', type=str)
     parser.add_argument('-d', '--delete', help='delete project', type=str)
+    parser.add_argument('-i', '--install', help='install php env', type=str)
 
     arg = parser.parse_args()
     inventory = wyInventory()
@@ -115,8 +148,10 @@ if __name__=="__main__":
         inventory.get_host(arg.delete)
         inventory.gen_playbook(arg.delete, "del")
         inventory.gen_init_script(arg.delete)
+    elif  arg.install !=None and arg.delete == None:
+        inventory.get_host(arg.install)
+        install_phpenv(arg.install)
     else:
         print "亲再试试吧!"
         exit()
-
 

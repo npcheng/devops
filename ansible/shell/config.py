@@ -1,4 +1,7 @@
 template_path = "/data/ansible/roles/tengine_config/templates/"
 playbook_path="/data/ansible/go.yml"
 group_vars ="/data/ansible/group_vars/all"
-shell_file = "/data/ansible/go.sh"
+shell_file ="/data/ansible/go.sh"
+ansible_hosts="/data/ansible/ansible_host"
+api_url="http://asset.wxshake.com/api/project/project"
+install_script="/data/ansible/install_php.sh"
