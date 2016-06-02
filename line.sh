@@ -14,11 +14,12 @@ function deleteMemInstance(){
     ss -tln| grep $port 2>&1 >/dev/null
     if [ $? -eq 0 ]
     then
-        mem_pid=`lsof -i:$port| sed -n 2p| awk '{print $2}'`
+        mem_pid=`lsof -i:$port -sTCP:LISTEN | sed -n 2p| awk '{print $2}'`
         if [ $mem_pid -lt 0 ] 
         then
+            exit_ret=1
             echo "process has down"
-            exit
+            exit $exit_ret
         fi
 
         if [ `kill -9 $mem_pid  2>&1 >/dev/null` ] 
@@ -29,24 +30,40 @@ function deleteMemInstance(){
         echo "process has down"
     fi
 }
+
 function deleteMemIptables(){
     if [ $ret -gt 0 ]
     then
-        #sed '${ret}p' $iptables_config
+        time=`date +"%Y-%m-%d_%H%M"`
+        echo "delete time $time" >> /data/backup/del_iptables.txt 
+        sed -n "${ret}p" $iptables_config >> /data/backup/del_iptables.txt
         sed  -i "${ret}d" $iptables_config
         if [ $? -eq 0 ]
         then
+            exit_ret=0
             echo "delete iptables item success"
+            exit  $exit_ret
+            
         else
+            exit_ret=1
             echo "delete iptables item failed" 
+            exit  $exit_ret
         fi
     fi
 }
+exit_ret=1
+if [ $# -ne 2 ]
+then
+    echo "please input right params"
+    exit $exit_ret
+fi
 iptables_config='iptables'
-getiptablesLine 192.168.10.192 12268
+#getiptablesLine 10.104.130.206 12268
+getiptablesLine $1 $2
 if  test -z $ret  
 then 
     echo "hello $ret"
+    exit $exit_ret
 else
     echo "good $ret" 
     deleteMemInstance
