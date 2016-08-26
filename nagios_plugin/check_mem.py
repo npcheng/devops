@@ -1,3 +1,4 @@
+#!/usr/local/bin/python2.7
 #coding=utf-8   
 import socket,time,sys,os,rrdtool
 from optparse import OptionParser
@@ -21,8 +22,8 @@ def get_stats(stats_data):
     stats['total_request'] = int(stats['cmd_get']) + int(stats['cmd_set']) + int(stats['delete_hits']) + int(stats['delete_misses'])
     return stats
 
-def  create_rrd(rrd_dir, host):
-    rrdtool.create(rrd_dir + host + "_mem_status.rrd",
+def  create_rrd(rrd_dir, host, port):
+    rrdtool.create(rrd_dir + host + "_" + port + "_mem_status.rrd",
            "--start", '-10s',
            "--step", "60",
            "DS:total_request:COUNTER:1800:0:U",
@@ -49,11 +50,12 @@ def  create_rrd(rrd_dir, host):
            "RRA:MIN:0.5:10080:262",
             ) 
 
-def update_rrd(rrd_dir, host, stats):
-    if os.path.exists(rrd_dir + host + "_mem_status.rrd") == False:
-        create_rrd(rrd_dir, host)
+def update_rrd(rrd_dir, host, port, stats):
+    port = str(port)
+    if os.path.exists(rrd_dir + host + "_" + port + "_mem_status.rrd") == False:
+        create_rrd(rrd_dir, host, port)
 
-    rrdtool.update(rrd_dir + host + "_mem_status.rrd",
+    rrdtool.update(rrd_dir + host + "_" + port + "_mem_status.rrd",
             '%s:%s:%s:%s:%s:%s' %(time.strftime("%s", time.localtime(time.time()-10)), str(stats['total_request']), str(stats['cmd_get']),
              str(stats['cmd_set']), str(stats['limit_maxbytes']), str(stats['bytes'])))
 
@@ -72,7 +74,6 @@ def ansys_stats(stats):
     #if int(stats['cmd_get']) !=0  or int(stats['get_hits']) != 0 :
     if int(stats['cmd_get']) !=0:
         get_ratio = ((float(stats['get_hits']) / int(stats['cmd_get']))) * 100
-        print stats['cmd_get'], stats['get_hits'], get_ratio
 
     mem_ratio = int(stats['bytes'])/float(stats['limit_maxbytes']) * 100
 
@@ -102,7 +103,6 @@ if __name__ == '__main__':
     host = options.host
     port = int(options.port)
 
-    print host, port
     try:
          s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
          s.connect((host, port))
@@ -116,5 +116,6 @@ if __name__ == '__main__':
         #sys.exit()
     stats = get_stats(data)
     ansys_stats(stats)
-    update_rrd(rrd_dir, host, stats)
+    update_rrd(rrd_dir, host, port, stats)
     print output
+    #sys.exit(status)
