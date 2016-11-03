@@ -1,0 +1,2 @@
+sed -i "/:OUTPUT/a\-A INPUT -p tcp --dport 15230 -m string --string \"commentContent=%E7%BB%8F%E6%B5%8E%E4%B9%8B%E5%A3%B0%E8%B6%8A%E5%8A%9E%E8%B6%8A%E5%A5%BD\" --algo bm -j DROP" /etc/sysconfig/iptables
+sed -i "/:OUTPUT/a\-A INPUT -p tcp --dport 15230 -m string --string \"commentContent=%E5%A5%BD%E7%9C%8B%EF%BC%8C%E5%A5%BD%E7%BE%8E%EF%BC%8C%E8%8A%82%E6%97%A5%E5%BF%AB%E4%B9%90%EF%BC%81\" --algo bm -j DROP" /etc/sysconfig/iptables
